@@ -1,0 +1,8 @@
+TEMPLATE_FILE=$1
+STACK_NAME=$2
+S3_BUCKET=$3
+OUTPUT_TEMPLATE_FILE="${STACK_NAME}.build.yml"
+
+aws cloudformation package --template $TEMPLATE_FILE --s3-bucket $S3_BUCKET --output-template-file $OUTPUT_TEMPLATE_FILE --force-upload &&
+aws cloudformation validate-template --template-body=file://$OUTPUT_TEMPLATE_FILE &&
+aws cloudformation deploy --stack-name $STACK_NAME --template-file $OUTPUT_TEMPLATE_FILE --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM

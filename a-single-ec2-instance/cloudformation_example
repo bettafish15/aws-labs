@@ -1,0 +1,348 @@
+---
+Metadata:
+  TemplateId: "arn:aws:cloudformation:ap-southeast-1:723811249017:generatedTemplate/2cc02b88-31a5-436f-ab53-1d7a125c9038"
+Resources:
+  EC2Subnet00subnet615d313800cBAkC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZoneId: "apse1-az3"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "172.31.0.0/20"
+      Ipv6Native: false
+      Tags: []
+  EC2InternetGateway00igw0b949b05b12800f3400uBgsB:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InternetGateway"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags:
+      - Value: "my-internet-gateway"
+        Key: "Name"
+  EC2VPCDHCPOptionsAssociation00vpc06619cd8018692d6800S5Jj6:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCDHCPOptionsAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc06619cd8018692d6800JuLrl"
+      DhcpOptionsId:
+        Ref: "EC2DHCPOptions00doptdffb3cb900eools"
+  EC2KeyPair00EC2keypair00vfKN9:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::KeyPair"
+    DeletionPolicy: "Retain"
+    Properties:
+      KeyName: "EC2 keypair"
+      KeyType: "rsa"
+      PublicKeyMaterial: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCTWW/i/RbGyt3Ap+Uv8JXM4MItvT4cvJ82l0bEYIoke9YPWzSqpdZy1WuEA73xBv9mBM86spt06t4cl2m+/qLHnNjYdUHQ6/m+/zabM2NxHdTNLHMS2/qOvrT3/XUCNGMaUgeJsXGxXO2BSd58yZwrXcrOvjmFeLIAfefNuLid6vTJEAOKjMNR5Vtd7MHqxbd+lLde1FiM0Z52dJCq2dho5aU9GQfMYpxykX6wulVtckhItyCOHMYh0wmF0QS4kVRsgap5A+xgL7lFED2sbQNO4tA8lRalSVX7kWNTRFhZU7oLSTKnJpqOBSAzz90HMAMYEpjvaY/oT4UFfbBEHpnh\
+        \ EC2 keypair\n"
+      Tags: []
+  EC2Route00rtbe97d2d8f00jRXkG:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Route"
+    DeletionPolicy: "Retain"
+    Properties:
+      RouteTableId:
+        Ref: "EC2RouteTable00rtbe97d2d8f00siET1"
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId:
+        Ref: "EC2InternetGateway00igwa430dcc300RWlSq"
+      VpcEndpointId: "igw-a430dcc3"
+  EC2SubnetNetworkAclAssociation00aclassoc1d36766e00Ct8WI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId:
+        Ref: "EC2NetworkAcl00aclaca8deca0014sOC"
+      SubnetId:
+        Ref: "EC2Subnet00subnet615d313800cBAkC"
+  IAMRole00ec2role00HoJMY:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::Role"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/"
+      ManagedPolicyArns:
+      - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+      MaxSessionDuration: 3600
+      RoleName: "ec2-role"
+      Description: "Allows EC2 instances to call AWS services on your behalf."
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action: "sts:AssumeRole"
+          Effect: "Allow"
+          Principal:
+            Service: "ec2.amazonaws.com"
+  IAMInstanceProfile00ec2role00FQjaI:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::IAM::InstanceProfile"
+    DeletionPolicy: "Retain"
+    Properties:
+      Path: "/"
+      Roles:
+      - Ref: "IAMRole00ec2role00HoJMY"
+      InstanceProfileName:
+        Ref: "IAMRole00ec2role00HoJMY"
+  EC2NetworkInterface00eni0e80a617acc50193800TTsZj:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkInterface"
+    DeletionPolicy: "Retain"
+    Properties:
+      Description: ""
+      PrivateIpAddress: "172.31.34.159"
+      PrivateIpAddresses:
+      - PrivateIpAddress: "172.31.34.159"
+        Primary: true
+      SecondaryPrivateIpAddressCount: 0
+      Ipv6PrefixCount: 0
+      Ipv4Prefixes: []
+      Ipv4PrefixCount: 0
+      GroupSet:
+      - "sg-01d4a343f76301f41"
+      Ipv6Prefixes: []
+      SubnetId:
+        Ref: "EC2Subnet00subnet3d7ddc7500Io5pV"
+      SourceDestCheck: true
+      InterfaceType: "interface"
+      Tags: []
+  EC2DHCPOptions00doptdffb3cb900eools:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::DHCPOptions"
+    DeletionPolicy: "Retain"
+    Properties:
+      DomainName: "ap-southeast-1.compute.internal"
+      DomainNameServers:
+      - "AmazonProvidedDNS"
+      Tags: []
+  EC2SubnetNetworkAclAssociation00aclassoc0336767000Pd0EZ:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId:
+        Ref: "EC2NetworkAcl00aclaca8deca0014sOC"
+      SubnetId:
+        Ref: "EC2Subnet00subnet3d7ddc7500Io5pV"
+  EC2InternetGateway00igwa430dcc300RWlSq:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::InternetGateway"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tags: []
+  EC2Subnet00subnet3d7ddc7500Io5pV:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZoneId: "apse1-az2"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "172.31.32.0/20"
+      Ipv6Native: false
+      Tags: []
+  EC2NetworkAcl00acl0f7ac1aa1f8b0998000s4L26:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkAcl"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc06619cd8018692d6800JuLrl"
+      Tags: []
+  EC2VPC00vpc52b77b3400ijJl2:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPC"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrBlock: "172.31.0.0/16"
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      EnableDnsHostnames: true
+      Tags: []
+  EC2VPCDHCPOptionsAssociation00vpc52b77b3400NtUOX:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPCDHCPOptionsAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      DhcpOptionsId:
+        Ref: "EC2DHCPOptions00doptdffb3cb900eools"
+  EC2NetworkAcl00aclaca8deca0014sOC:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::NetworkAcl"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      Tags: []
+  EC2SecurityGroup00sg01d4a343f76301f4100E2k2D:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "launch-wizard created 2022-06-26T04:21:10.666Z"
+      GroupName: "launch-wizard-1"
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      SecurityGroupIngress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "tcp"
+        FromPort: 80
+        ToPort: 80
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "tcp"
+        FromPort: 22
+        ToPort: 22
+      SecurityGroupEgress:
+      - CidrIp: "0.0.0.0/0"
+        IpProtocol: "-1"
+        FromPort: -1
+        ToPort: -1
+  EC2RouteTable00rtbe97d2d8f00siET1:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::RouteTable"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+  EC2Volume00vol042c756a18b57ecd300xomrm:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Volume"
+    DeletionPolicy: "Retain"
+    Properties:
+      MultiAttachEnabled: false
+      SnapshotId: "snap-07428201c8ba160bf"
+      VolumeType: "gp2"
+      Encrypted: false
+      Size: 8
+      AutoEnableIO: true
+      AvailabilityZone: "ap-southeast-1a"
+      Iops: 100
+      Tags: []
+  EC2VPC00vpc06619cd8018692d6800JuLrl:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VPC"
+    DeletionPolicy: "Retain"
+    Properties:
+      CidrBlock: "172.16.0.0/16"
+      EnableDnsSupport: true
+      InstanceTenancy: "default"
+      EnableDnsHostnames: false
+      Tags: []
+  EC2VolumeAttachment00vol042c756a18b57ecd3009fDik:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::VolumeAttachment"
+    DeletionPolicy: "Retain"
+    Properties:
+      InstanceId: "i-031e2d0eb42707c8f"
+      VolumeId: "vol-042c756a18b57ecd3"
+      Device: "/dev/xvda"
+  EC2Subnet00subnete74ffe8100HQcbe:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Subnet"
+    DeletionPolicy: "Retain"
+    Properties:
+      VpcId:
+        Ref: "EC2VPC00vpc52b77b3400ijJl2"
+      MapPublicIpOnLaunch: true
+      EnableDns64: false
+      AvailabilityZoneId: "apse1-az1"
+      PrivateDnsNameOptionsOnLaunch:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      CidrBlock: "172.31.16.0/20"
+      Ipv6Native: false
+      Tags: []
+  EC2SubnetNetworkAclAssociation00aclassoc1c36766f00jShtc:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SubnetNetworkAclAssociation"
+    DeletionPolicy: "Retain"
+    Properties:
+      NetworkAclId:
+        Ref: "EC2NetworkAcl00aclaca8deca0014sOC"
+      SubnetId:
+        Ref: "EC2Subnet00subnete74ffe8100HQcbe"
+  EC2Instance00i031e2d0eb42707c8f007npXK:
+    UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::Instance"
+    DeletionPolicy: "Retain"
+    Properties:
+      Tenancy: "default"
+      SecurityGroups:
+      - "launch-wizard-1"
+      PrivateIpAddress: "172.31.34.159"
+      UserData: "IyEvYmluL2Jhc2gKeXVtIGluc3RhbGwgaHR0cGQgLXkKc3lzdGVtY3RsIGVuYWJsZSBodHRwZC5zZXJ2aWNlCnNlcnZpY2UgaHR0cGQgc3RhcnQKVE9LRU49JChjdXJsIC1YIFBVVCAiaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvYXBpL3Rva2VuIiAtSCAiWC1hd3MtZWMyLW1ldGFkYXRhLXRva2VuLXR0bC1zZWNvbmRzOiAyMTYwMCIgLS1zaWxlbnQpCmluc3RhbmNlSWQ9JChjdXJsIC1IICJYLWF3cy1lYzItbWV0YWRhdGEtdG9rZW46ICRUT0tFTiIgaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhL2luc3RhbmNlLWlkIC0tc2lsZW50KQpyZWdpb249JChjdXJsIC1IICJYLWF3cy1lYzItbWV0YWRhdGEtdG9rZW46ICRUT0tFTiIgaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvZHluYW1pYy9pbnN0YW5jZS1pZGVudGl0eS9kb2N1bWVudCAtLXNpbGVudCB8IGdyZXAgcmVnaW9uIHwgYXdrIC1GXCIgJ3twcmludCAkNH0nKQplY2hvICI8aDE+JGluc3RhbmNlSWQ8L2gxPiIgPiAvdmFyL3d3dy9odG1sL2luZGV4Lmh0bWwKYXdzIGVjMiBjcmVhdGUtdGFncyAtLXJlc291cmNlcyAiJGluc3RhbmNlSWQiIC0tdGFncyBLZXk9TmFtZSxWYWx1ZT0iUFJPRC0kaW5zdGFuY2VJZCIgLS1yZWdpb24gIiRyZWdpb24i"
+      BlockDeviceMappings:
+      - Ebs:
+          SnapshotId: "snap-07428201c8ba160bf"
+          VolumeType: "gp2"
+          Iops: 100
+          VolumeSize: 8
+          Encrypted: false
+          DeleteOnTermination: true
+        DeviceName: "/dev/xvda"
+      IamInstanceProfile:
+        Ref: "IAMInstanceProfile00ec2role00FQjaI"
+      SubnetId:
+        Ref: "EC2Subnet00subnet3d7ddc7500Io5pV"
+      EbsOptimized: false
+      Volumes:
+      - VolumeId: "vol-042c756a18b57ecd3"
+        Device: "/dev/xvda"
+      NetworkInterfaces:
+      - PrivateIpAddresses:
+        - PrivateIpAddress: "172.31.34.159"
+          Primary: true
+        SecondaryPrivateIpAddressCount: 0
+        DeviceIndex: "0"
+        GroupSet:
+        - Ref: "EC2SecurityGroup00sg01d4a343f76301f4100E2k2D"
+        Ipv6Addresses: []
+        SubnetId:
+          Ref: "EC2Subnet00subnet3d7ddc7500Io5pV"
+        AssociatePublicIpAddress: true
+        NetworkInterfaceId:
+          Ref: "EC2NetworkInterface00eni0e80a617acc50193800TTsZj"
+        DeleteOnTermination: true
+      ImageId: "ami-0910e4162f162c238"
+      InstanceType: "t2.micro"
+      Monitoring: false
+      Tags:
+      - Value: "PROD-i-031e2d0eb42707c8f"
+        Key: "Name"
+      InstanceInitiatedShutdownBehavior: "stop"
+      CpuOptions:
+        ThreadsPerCore: 1
+        CoreCount: 1
+      AvailabilityZone: "ap-southeast-1a"
+      PrivateDnsNameOptions:
+        EnableResourceNameDnsARecord: false
+        HostnameType: "ip-name"
+        EnableResourceNameDnsAAAARecord: false
+      SecurityGroupIds:
+      - "sg-01d4a343f76301f41"
+      DisableApiTermination: false
+      KeyName: "EC2 keypair"
+      SourceDestCheck: true
+      PlacementGroupName: ""
+      VpcId: "vpc-52b77b34"
+      CreditSpecification:
+        CPUCredits: "standard"
