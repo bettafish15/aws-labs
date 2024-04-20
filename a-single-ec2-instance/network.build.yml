@@ -2,12 +2,52 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Network Resource Example
 Resources:
   PrimaryVpcResources:
-    UpdateReplacePolicy: Retain
     Type: AWS::EC2::VPC
-    DeletionPolicy: Retain
     Properties:
-      CidrBlock: 172.31.0.0/16
+      CidrBlock: 10.0.0.0/16
       EnableDnsSupport: true
       InstanceTenancy: default
       EnableDnsHostnames: true
       Tags: []
+  EC2SubnetOne:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId:
+        Ref: PrimaryVpcResources
+      AvailabilityZone: ap-southeast-1a
+      CidrBlock: 10.0.0.0/24
+      Tags: []
+  EC2InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+      - Value: my-internet-gateway
+        Key: Name
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId:
+        Ref: EC2InternetGateway
+      VpcId:
+        Ref: PrimaryVpcResources
+  EC2RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId:
+        Ref: PrimaryVpcResources
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId:
+        Ref: EC2RouteTable
+      SubnetId:
+        Ref: EC2SubnetOne
+  EC2Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId:
+        Ref: EC2RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId:
+        Ref: EC2InternetGateway
+    DependsOn: AttachInternetGateway
