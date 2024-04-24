@@ -51,3 +51,43 @@ Resources:
       GatewayId:
         Ref: EC2InternetGateway
     DependsOn: AttachInternetGateway
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for EC2
+      GroupName: security-group-1
+      VpcId:
+        Ref: PrimaryVpcResources
+      SecurityGroupIngress:
+      - CidrIp: 0.0.0.0/0
+        IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+      - CidrIp: 0.0.0.0/0
+        IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+      SecurityGroupEgress:
+      - CidrIp: 0.0.0.0/0
+        IpProtocol: '-1'
+        FromPort: -1
+        ToPort: -1
+  EC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      SecurityGroupIds:
+      - Ref: EC2SecurityGroup
+      UserData: ./user-data
+      SubnetId:
+        Ref: EC2SubnetOne
+      ImageId: ami-0910e4162f162c238
+      InstanceType: t2.micro
+      Monitoring: false
+      Tags:
+      - Value: PROD-i-031e2d0eb42707c8f
+        Key: Name
+      InstanceInitiatedShutdownBehavior: stop
+      AvailabilityZone: ap-southeast-1a
+      KeyName: EC2 keypair
+      VpcId:
+        Ref: PrimaryVpcResources

@@ -49,3 +49,146 @@ Resources:
       DestinationCidrBlock: "0.0.0.0/0"
       GatewayId: !Ref EC2InternetGateway
     DependsOn: AttachInternetGateway
+  EC2SecurityGroup:
+    # UpdateReplacePolicy: "Retain"
+    Type: "AWS::EC2::SecurityGroup"
+    # DeletionPolicy: "Retain"
+    Properties:
+      GroupDescription: "Security Group for EC2"
+      GroupName: "security-group-1"
+      VpcId: !Ref PrimaryVpcResources
+      SecurityGroupIngress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "tcp"
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "tcp"
+          FromPort: 22
+          ToPort: 22
+      SecurityGroupEgress:
+        - CidrIp: "0.0.0.0/0"
+          IpProtocol: "-1"
+          FromPort: -1
+          ToPort: -1
+  # IAMRole00ec2role00HoJMY:
+  #   UpdateReplacePolicy: "Retain"
+  #   Type: "AWS::IAM::Role"
+  #   DeletionPolicy: "Retain"
+  #   Properties:
+  #     Path: "/"
+  #     ManagedPolicyArns:
+  #       - "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  #     MaxSessionDuration: 3600
+  #     RoleName: "ec2-role"
+  #     Description: "Allows EC2 instances to call AWS services on your behalf."
+  #     AssumeRolePolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Action: "sts:AssumeRole"
+  #           Effect: "Allow"
+  #           Principal:
+  #             Service: "ec2.amazonaws.com"
+  # IAMInstanceProfile00ec2role00FQjaI:
+  #   UpdateReplacePolicy: "Retain"
+  #   Type: "AWS::IAM::InstanceProfile"
+  #   DeletionPolicy: "Retain"
+  #   Properties:
+  #     Path: "/"
+  #     Roles:
+  #       - Ref: "IAMRole00ec2role00HoJMY"
+  #     InstanceProfileName:
+  #       Ref: "IAMRole00ec2role00HoJMY"
+
+  # EC2KeyPair:
+  #   Type: "AWS::EC2::KeyPair"
+  #   Properties:
+  #     KeyName: "EC2 keypair"
+  #     KeyType: "rsa"
+  #     PublicKeyMaterial: # this property specifies existing key, just need to import the public key to AWS
+  #       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCTWW/i/RbGyt3Ap+Uv8JXM4MItvT4cvJ82l0bEYIoke9YPWzSqpdZy1WuEA73xBv9mBM86spt06t4cl2m+/qLHnNjYdUHQ6/m+/zabM2NxHdTNLHMS2/qOvrT3/XUCNGMaUgeJsXGxXO2BSd58yZwrXcrOvjmFeLIAfefNuLid6vTJEAOKjMNR5Vtd7MHqxbd+lLde1FiM0Z52dJCq2dho5aU9GQfMYpxykX6wulVtckhItyCOHMYh0wmF0QS4kVRsgap5A+xgL7lFED2sbQNO4tA8lRalSVX7kWNTRFhZU7oLSTKnJpqOBSAzz90HMAMYEpjvaY/oT4UFfbBEHpnh\
+  #       \ EC2 keypair\n"
+  #     Tags: []
+  # EC2NetworkInterface:
+  #   Type: "AWS::EC2::NetworkInterface"
+  #   Properties:
+  #     Description: ""
+  #     # PrivateIpAddress: "172.31.34.159"
+  #     # PrivateIpAddresses:
+  #     #   - PrivateIpAddress: "172.31.34.159"
+  #     #     Primary: true
+  #     # SecondaryPrivateIpAddressCount: 0
+  #     # Ipv6PrefixCount: 0
+  #     # Ipv4Prefixes: []
+  #     # Ipv4PrefixCount: 0
+  #     # GroupSet:
+  #     #   - "sg-01d4a343f76301f41"
+  #     # Ipv6Prefixes: []
+  #     SubnetId:
+  #       Ref: !Ref EC2SubnetOne
+  #     # SourceDestCheck: true
+  #     # InterfaceType: "interface"
+  #     Tags: []
+  EC2Instance:
+    Type: "AWS::EC2::Instance"
+    Properties:
+      # Tenancy: "default"
+      # SecurityGroups: # for default VPC only
+      #   - "launch-wizard-1"
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroup
+      # PrivateIpAddress: "172.31.34.159"
+      # UserData: ./user-data
+      # BlockDeviceMappings:
+      #   - Ebs:
+      #       SnapshotId: "snap-07428201c8ba160bf"
+      #       VolumeType: "gp2"
+      #       Iops: 100
+      #       VolumeSize: 8
+      #       Encrypted: false
+      #       DeleteOnTermination: true
+      #     DeviceName: "/dev/xvda"
+      # IamInstanceProfile:
+      #   Ref: "IAMInstanceProfile00ec2role00FQjaI"
+      SubnetId: !Ref EC2SubnetOne
+      # EbsOptimized: false
+      # Volumes:
+      #   - VolumeId: "vol-042c756a18b57ecd3"
+      #     Device: "/dev/xvda"
+      # NetworkInterfaces:
+      #   - PrivateIpAddresses:
+      #       - PrivateIpAddress: "172.31.34.159"
+      #         Primary: true
+      #     SecondaryPrivateIpAddressCount: 0
+      #     DeviceIndex: "0"
+      #     GroupSet:
+      #       - Ref: "EC2SecurityGroup00sg01d4a343f76301f4100E2k2D"
+      #     Ipv6Addresses: []
+      #     SubnetId:
+      #       Ref: "EC2Subnet00subnet3d7ddc7500Io5pV"
+      #     AssociatePublicIpAddress: true
+      #     NetworkInterfaceId:
+      #       Ref: "EC2NetworkInterface00eni0e80a617acc50193800TTsZj"
+      #     DeleteOnTermination: true
+      ImageId: "ami-0910e4162f162c238"
+      InstanceType: "t2.micro"
+      Monitoring: false
+      Tags:
+        - Value: "PROD-i-031e2d0eb42707c8f"
+          Key: "Name"
+      InstanceInitiatedShutdownBehavior: "stop"
+      # CpuOptions:
+      #   ThreadsPerCore: 1
+      #   CoreCount: 1
+      AvailabilityZone: "ap-southeast-1a"
+      # PrivateDnsNameOptions:
+      #   EnableResourceNameDnsARecord: false
+      #   HostnameType: "ip-name"
+      #   EnableResourceNameDnsAAAARecord: false
+      # DisableApiTermination: false
+      KeyName: "EC2 keypair"
+      # SourceDestCheck: true
+      # PlacementGroupName: ""
+      VpcId: !Ref PrimaryVpcResources
+      # CreditSpecification:
+      #   CPUCredits: "standard"
